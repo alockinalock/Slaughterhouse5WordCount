@@ -1,0 +1,10 @@
+[package]
+name = "word-count"
+version = "0.1.0"
+description = "Parses a string to find all unique words and how many times they were used"
+authors = ["Andrew Zhang <kanjigawa@gmail.com>"]
+
+[dependencies]
+serde_json = "1.0"
+lopdf = "0.32.0"
+lazy_static = "1.4.0"
