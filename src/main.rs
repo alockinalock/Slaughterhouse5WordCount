@@ -3,8 +3,8 @@ use std::path::PathBuf;
 pub mod path;
 pub mod pdf;
 
-use pdf::read::*;
 use path::*;
+use pdf::read::*;
 
 lazy_static::lazy_static! {
     pub static ref ROOT_DIR: PathBuf = root_dir().expect("Failed to get root folder");
@@ -13,6 +13,8 @@ lazy_static::lazy_static! {
 }
 
 fn main() {
-    let vec = to_vector(get_pdfs(&PDF_DIR));
-    print!("{:?}", remove_all_pdf_suffixes(vec));
+    let vect = get_pdfs(&PDF_DIR).unwrap();
+    println!("{:?}", remove_all_pdf_suffixes(vect));
+
+    read_pdf(PDF_DIR.join("pdf-test-1.pdf"));
 }

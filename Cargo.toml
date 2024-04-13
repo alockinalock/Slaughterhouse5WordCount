@@ -6,5 +6,5 @@ authors = ["Andrew Zhang <kanjigawa@gmail.com>"]
 
 [dependencies]
 serde_json = "1.0"
-lopdf = "0.32.0"
+lopdf = { version = "0.32.0", features = ["pom_parser", "pom"]}
 lazy_static = "1.4.0"
