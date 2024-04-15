@@ -1,9 +1,6 @@
-use self::lopdf::{Document, Object};
 use std::error::Error;
 use std::fs;
 use std::path::PathBuf;
-
-extern crate lopdf;
 
 pub fn get_pdfs(folder_path: &PathBuf) -> Result<Vec<String>, Box<dyn Error>> {
     let mut names: Vec<String> = Vec::new();
@@ -41,24 +38,8 @@ pub fn remove_all_pdf_suffixes(vec: Vec<String>) -> Vec<String> {
     new_vec
 }
 
-//#[cfg(any(feature = "pom_parser", feature = "nom_parser"))]
-pub fn read_pdf(path: PathBuf) {
-    let mut doc = Document::load(path).unwrap();
-
-    if doc.is_encrypted() {
-        return;
-    }
-
-    let test = doc.get_pages();
-
-    let contents = doc.get_page_content(*test.get(&1).unwrap());
-
-    let page_nums: &[u32] = &[1];
-
-    let text = doc.extract_text(page_nums);
-
-    let fonts = doc.get_page_fonts(*test.get(&1).unwrap());
-
-    println!("{:?}", text);
-    println!("{:?}", fonts);
+pub fn read_pdf(path: PathBuf) -> String {
+  let bytes = std::fs::read(path).unwrap();
+  let out = pdf_extract::extract_text_from_mem(&bytes).unwrap();
+  out
 }

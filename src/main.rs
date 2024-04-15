@@ -4,6 +4,7 @@ pub mod path;
 pub mod pdf;
 
 use path::*;
+use pdf::parse::*;
 use pdf::read::*;
 
 lazy_static::lazy_static! {
@@ -13,8 +14,23 @@ lazy_static::lazy_static! {
 }
 
 fn main() {
-    let vect = get_pdfs(&PDF_DIR).unwrap();
-    println!("{:?}", remove_all_pdf_suffixes(vect));
+    // let vect = get_pdfs(&PDF_DIR).unwrap();
+    // println!("{:?}", remove_all_pdf_suffixes(vect));
 
-    read_pdf(PDF_DIR.join("pdf-test-1.pdf"));
+    let path: PathBuf = PDF_DIR.join("pdf-test-1.pdf");
+
+    let data: String = read_pdf(path);
+
+    let word_counts = parse_for_words(&data);
+
+    // let sorted_word_counts = sort_by_instances(word_counts);
+
+    // for (word, count) in &sorted_word_counts {
+    //     println!("{}: {}", word, count);
+    // }
+
+for (word, count) in &word_counts {
+        println!("{}: {}", word, count);
+     }
+
 }
