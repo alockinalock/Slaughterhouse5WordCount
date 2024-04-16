@@ -9,3 +9,11 @@ pub fn root_dir() -> Result<PathBuf, Box<dyn Error>> {
 	
 	Ok(root_dir)
 }
+
+pub fn attach_pdf() {
+
+}
+
+pub fn attach_all_pdfs() {
+	
+}
