@@ -8,3 +8,4 @@ authors = ["Andrew Zhang <kanjigawa@gmail.com>"]
 serde_json = "1.0"
 pdf-extract = "0.7.5"
 lazy_static = "1.4.0"
+regex = "1.10.4"

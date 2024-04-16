@@ -7,6 +7,8 @@ use path::*;
 use pdf::parse::*;
 use pdf::read::*;
 
+extern crate regex;
+
 lazy_static::lazy_static! {
     pub static ref ROOT_DIR: PathBuf = root_dir().expect("Failed to get root folder");
 
@@ -29,8 +31,7 @@ fn main() {
     //     println!("{}: {}", word, count);
     // }
 
-for (word, count) in &word_counts {
+    for (word, count) in &word_counts {
         println!("{}: {}", word, count);
-     }
-
+    }
 }
