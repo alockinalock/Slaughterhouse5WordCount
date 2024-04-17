@@ -38,8 +38,9 @@ pub fn remove_all_pdf_suffixes(vec: Vec<String>) -> Vec<String> {
     new_vec
 }
 
+// FIXME: ewww .unwrap()
 pub fn read_pdf(path: PathBuf) -> String {
-  let bytes = std::fs::read(path).unwrap();
-  let out = pdf_extract::extract_text_from_mem(&bytes).unwrap();
-  out
+    let bytes = std::fs::read(path).unwrap();
+    let out = pdf_extract::extract_text_from_mem(&bytes).unwrap();
+    out
 }
