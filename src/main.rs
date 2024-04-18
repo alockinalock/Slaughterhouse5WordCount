@@ -14,17 +14,22 @@ lazy_static::lazy_static! {
 
     pub static ref PDF_DIR: PathBuf = ROOT_DIR.join("assets");
 
-    // FIXME: not sure why we call .to_path_buf(), it's already a PathBuf type
-    pub static ref PDFS: Vec<PathBuf> = join_all(PDF_DIR.to_path_buf());
+    pub static ref SAVE_DIR: PathBuf = ROOT_DIR.join("saved");
 }
 
 fn main() {
+
+    // Created saved folder if it doesn't exist
+    if !SAVE_DIR.exists() {
+        std::fs::create_dir(SAVE_DIR.as_path()).expect("Failed to create saved folder");
+    }
+
     // let vect = get_pdfs(&PDF_DIR).unwrap();
     // println!("{:?}", remove_all_pdf_suffixes(vect));
 
     let path: PathBuf = PDF_DIR.join("slaughterhouse-five.pdf");
 
-    let data: String = read_pdf(path);
+    let data: String = read_pdf(&path);
 
     let word_counts = better_parse_for_words(&data);
 

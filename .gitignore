@@ -4,6 +4,9 @@
 .vscode/
 .vs/
 
+# Saves directory
+saved/
+
 # System files
 .DS_Store
 

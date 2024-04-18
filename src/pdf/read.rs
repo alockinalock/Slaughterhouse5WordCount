@@ -1,8 +1,8 @@
 use std::error::Error;
 use std::fs;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
-pub fn get_pdfs(folder_path: &PathBuf) -> Result<Vec<String>, Box<dyn Error>> {
+pub fn get_pdfs(folder_path: &Path) -> Result<Vec<String>, Box<dyn Error>> {
     let mut names: Vec<String> = Vec::new();
 
     let entries = fs::read_dir(folder_path)?;
@@ -39,7 +39,7 @@ pub fn remove_all_pdf_suffixes(vec: Vec<String>) -> Vec<String> {
 }
 
 // FIXME: ewww .unwrap()
-pub fn read_pdf(path: PathBuf) -> String {
+pub fn read_pdf(path: &PathBuf) -> String {
     let bytes = std::fs::read(path).unwrap();
     let out = pdf_extract::extract_text_from_mem(&bytes).unwrap();
     out
