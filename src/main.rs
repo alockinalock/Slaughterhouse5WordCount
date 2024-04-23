@@ -46,6 +46,7 @@ fn main() {
 
     println!("Enter the number which represents the PDF document you would like to use.");
 
+    // FIXME: prone to error depending on user input here... FIX PLEASE
     let mut temp_input_holder: String = String::new();
     io::stdin().read_line(&mut temp_input_holder).expect("Failed to read input");
 
@@ -84,11 +85,12 @@ fn main() {
     let data: String = read_pdf(&selected_pdf);
 
     let word_counts: HashMap<String, usize> = regex_parse_for_words(&data);
+    let sorted_count: Vec<(String, usize)> = sort_by_instances(word_counts.clone());
 
     // there's probably some better alternative... oh well!
+    // also, there's a bunch of clones because Rust borrow rules and stuff. preferably i dont have to do this
     if userConfig.sorted {
-        let mut sorted_count: Vec<(String, usize)> = sort_by_instances(word_counts);
-
+        let mut cloned_sc = sorted_count.clone();
         temp_input_holder.clear();
         println!("Some terminals limit the amount of characters able to be printed. Would you like for the order to be reversed so you can prioritize the words with the most instances being shown?");
         print!("[yes/no] ");
@@ -96,20 +98,26 @@ fn main() {
         io::stdin().read_line(&mut temp_input_holder).expect("Failed to read input");
 
         if temp_input_holder.trim().to_lowercase().starts_with("y") {
-            sorted_count.reverse();
+            cloned_sc.reverse();
         }
 
-        for (word, count) in sorted_count {
+        for (word, count) in cloned_sc {
             println!("{}: {}", word, count);
         }
     }
     else {
-        for (word, count) in word_counts {
+        for (word, count) in word_counts.clone() {
             println!("{}: {}", word, count);
            }
     }
 
     if userConfig.saved {
+        if userConfig.sorted {
+            save_to_json_for_vec(&sorted_count, SAVE_DIR.to_path_buf());
+        }
+        else {
+            save_to_json_for_hashmap(&word_counts, SAVE_DIR.to_path_buf())
+        }
         println!("JSON saved at: {}", SAVE_DIR.to_string_lossy());
     }
 
