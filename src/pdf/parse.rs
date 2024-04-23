@@ -21,6 +21,7 @@ pub fn parse_for_words(data: &String) -> HashMap<String, usize> {
 
 // Uses regex and splits by whitespace to find words.
 // Returns an unsorted HashMap containing the word (string) and number of isntances (usize)
+// you know, when i first started i didnt realize a tuple vector could also work... oh well!
 pub fn regex_parse_for_words(data: &str) -> HashMap<String, usize> {
     let fixed_data = data.to_ascii_lowercase();
     let re = Regex::new(r"[^\w-]+").unwrap(); 
@@ -41,5 +42,11 @@ pub fn sort_by_instances(data: HashMap<String, usize>) -> Vec<(String, usize)> {
     let mut sorted_entries: Vec<(String, usize)> = data.into_iter().collect();
     sorted_entries.sort_by(|a, b| b.1.cmp(&a.1));
     sorted_entries
+}
+
+// the order of the vector is not the same as the hashmap, but it's not sorted so it's negligible
+pub fn to_tuple_vector(data: HashMap<String, usize>) -> Vec<(String, usize)> {
+    let entries: Vec<(String, usize)> = data.into_iter().collect();
+    entries
 }
 

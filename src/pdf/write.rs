@@ -6,7 +6,6 @@ use std::error::Error;
 use std::collections::HashMap;
 
 // these 2 functions need to exist because of root problem with how we sort the hashmap
-// TODO: saving a hashmap to json looks... bad. condense this into one function which takes a vec
 pub fn save_to_json_for_hashmap(data: &HashMap<String, usize>, path_to_saved: PathBuf) {
         let json_string = serde_json::to_string_pretty(&data).unwrap();
 

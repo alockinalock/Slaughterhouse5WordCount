@@ -27,6 +27,8 @@ struct Config {
     saved: bool,
 }
 
+// if someone other than me is reading this, the implementation using a HashMap could be replaced entirely with a vector with a tuple of string and usize
+// this would actually solve so many problems...
 fn main() {
     let mut userConfig = Config {
         sorted: false,
@@ -112,12 +114,7 @@ fn main() {
     }
 
     if userConfig.saved {
-        if userConfig.sorted {
-            save_to_json_for_vec(&sorted_count, SAVE_DIR.to_path_buf());
-        }
-        else {
-            save_to_json_for_hashmap(&word_counts, SAVE_DIR.to_path_buf())
-        }
+        // TODO
         println!("JSON saved at: {}", SAVE_DIR.to_string_lossy());
     }
 
