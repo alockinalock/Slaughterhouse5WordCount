@@ -18,6 +18,7 @@ pub fn save_to_json_for_hashmap(data: &HashMap<String, usize>, path_to_saved: Pa
         file_name
 }
 
+#[deprecated = "Writing a vector to a json similar to how this function goes about it results in a terrible formatted JSON file."]
 pub fn save_to_json_for_vec(data: &Vec<(String, usize)>, path_to_saved: PathBuf) {
         let json_string = serde_json::to_string_pretty(&data).unwrap();
 
