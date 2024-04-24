@@ -1,5 +1,5 @@
 use regex::Regex;
-use std::collections::HashMap;
+use std::collections::{BTreeMap, HashMap};
 
 
 // Returns an unsorted HashMap containing the word (string) and number of instances (usize).
@@ -45,8 +45,11 @@ pub fn sort_by_instances(data: HashMap<String, usize>) -> Vec<(String, usize)> {
 }
 
 // the order of the vector is not the same as the hashmap, but it's not sorted so it's negligible
-pub fn to_tuple_vector(data: HashMap<String, usize>) -> Vec<(String, usize)> {
-    let entries: Vec<(String, usize)> = data.into_iter().collect();
+pub fn to_btreemap(data: Vec<(String, usize)>) -> BTreeMap<usize, String> {
+    let mut entries: BTreeMap<usize, String> = BTreeMap::new();
+    for (word, count) in data {
+        entries.insert(count, word);
+    }
     entries
 }
 
