@@ -127,14 +127,6 @@ fn main() {
         
         println!("JSON saved at: {}", SAVE_DIR.join(file_name).to_string_lossy());
     }
-
-    // let sorted_word_counts = sort_by_instances(word_counts);
-
-    // let reversed_swc = sorted_word_counts.iter().rev();
-
-    // for (word, count) in reversed_swc {
-    //     println!("{}: {}", word, count);
-    // }
 }
 
 fn gui_list_pdfs_ordered(vec: &Vec<String>) {
