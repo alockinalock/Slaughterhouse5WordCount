@@ -17,7 +17,7 @@ extern crate regex;
 extern crate serde_json;
 
 lazy_static::lazy_static! {
-    pub static ref ROOT_DIR: PathBuf = root_dir().expect("Failed to get root folder");
+    pub static ref ROOT_DIR: PathBuf = executable_dir().expect("Failed to get root folder");
 
     pub static ref PDF_DIR: PathBuf = ROOT_DIR.join("assets");
 
@@ -37,6 +37,8 @@ fn main() {
         saved: false,
     };
 
+    println!("Ensure that PDFs are placed in the same folder as the executable.");
+
     // Created saved folder if it doesn't exist
     if !SAVE_DIR.exists() {
         std::fs::create_dir(SAVE_DIR.as_path()).expect("Failed to create saved folder");
@@ -44,7 +46,7 @@ fn main() {
     }
 
     // this line may panic
-    let pdfs = get_pdfs(&PDF_DIR).unwrap();
+    let pdfs = get_pdfs(&ROOT_DIR).unwrap();
 
     gui_list_pdfs_ordered(&pdfs);
 
