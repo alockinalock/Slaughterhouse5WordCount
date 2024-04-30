@@ -32,12 +32,10 @@ struct Config {
 // if someone other than me is reading this, the implementation using a HashMap could be replaced entirely with a vector with a tuple of string and usize
 // this would actually solve so many problems...
 fn main() {
-    let mut userConfig = Config {
+    let mut user_config = Config {
         sorted: false,
         saved: false,
     };
-
-    println!("Ensure that PDFs are placed in the same folder as the executable.");
 
     // Created saved folder if it doesn't exist
     if !SAVE_DIR.exists() {
@@ -48,9 +46,15 @@ fn main() {
     // this line may panic
     let pdfs = get_pdfs(&ROOT_DIR).unwrap();
 
-    gui_list_pdfs_ordered(&pdfs);
+    if pdfs.is_empty() {
+        println!("Program exiting abruptly\n*** Ensure that PDFs are placed in the same folder as the executable.");
+        return
+    }
+    else{
+        gui_list_pdfs_ordered(&pdfs);
 
-    println!("Enter the number which represents the PDF document you would like to use.");
+        println!("Enter the number which represents the PDF document you would like to use.");
+    }
 
     // FIXME: prone to error depending on user input here... FIX PLEASE
     let mut temp_input_holder: String = String::new();
@@ -67,10 +71,10 @@ fn main() {
     io::stdin().read_line(&mut temp_input_holder).expect("Failed to read input");
 
     if temp_input_holder.trim().to_lowercase().starts_with("y") {
-        userConfig.sorted = true;
+        user_config.sorted = true;
     }
     else {
-        userConfig.sorted = false;
+        user_config.sorted = false;
     }
 
     temp_input_holder.clear();
@@ -80,13 +84,13 @@ fn main() {
     io::stdin().read_line(&mut temp_input_holder).expect("Failed to read input");
 
     if temp_input_holder.trim().to_lowercase().starts_with("y") {
-        userConfig.saved = true;
+        user_config.saved = true;
     }
     else {
-        userConfig.saved = false;
+        user_config.saved = false;
     }
 
-    println!("*** Reading selected pdf\n    CONFIG\n    --sorted: {}\n    --saved: {}", userConfig.sorted, userConfig.saved);
+    println!("*** Reading selected pdf\n    CONFIG\n    --sorted: {}\n    --saved: {}", user_config.sorted, user_config.saved);
 
     let data: String = read_pdf(&selected_pdf);
 
@@ -95,7 +99,7 @@ fn main() {
 
     // there's probably some better alternative... oh well!
     // also, there's a bunch of clones because Rust borrow rules and stuff. preferably i dont have to do this
-    if userConfig.sorted {
+    if user_config.sorted {
         let mut cloned_sc = sorted_count.clone();
         temp_input_holder.clear();
         println!("Some terminals limit the amount of characters able to be printed. Would you like for the order to be reversed so you can prioritize the words with the most instances being shown?");
@@ -117,11 +121,11 @@ fn main() {
            }
     }
 
-    if userConfig.saved {
+    if user_config.saved {
         let prepared_unsorted: HashMap<String, usize> = word_counts;
         let prepared_sorted: BTreeMap<usize, String> = to_btreemap(sorted_count);
         let file_name: String;
-        if !userConfig.sorted {
+        if !user_config.sorted {
             file_name = save_to_json_for_hashmap(&prepared_unsorted, SAVE_DIR.to_path_buf());
         } else {
             file_name = save_to_json_for_btreemap(&prepared_sorted, SAVE_DIR.to_path_buf());
