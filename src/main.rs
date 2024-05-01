@@ -19,8 +19,6 @@ extern crate serde_json;
 lazy_static::lazy_static! {
     pub static ref ROOT_DIR: PathBuf = executable_dir().expect("Failed to get root folder");
 
-    pub static ref PDF_DIR: PathBuf = ROOT_DIR.join("assets");
-
     pub static ref SAVE_DIR: PathBuf = ROOT_DIR.join("saved");
 }
 
@@ -43,6 +41,8 @@ fn main() {
         println!("The saved folder was not found. Folder created at {}", SAVE_DIR.to_string_lossy());
     }
 
+    auto_run(&user_config);
+
     // this line may panic
     let pdfs = get_pdfs(&ROOT_DIR).unwrap();
 
@@ -62,7 +62,7 @@ fn main() {
 
     let temp_int_holder: usize = temp_input_holder.trim().parse().unwrap();
 
-    let selected_pdf: PathBuf = PDF_DIR.join(pdfs.get(temp_int_holder).unwrap().clone());
+    let selected_pdf: PathBuf = ROOT_DIR.join(pdfs.get(temp_int_holder).unwrap().clone());
 
     temp_input_holder.clear();
     println!("Would you like for the list to be sorted? [This will apply to both printing and saving]");
@@ -143,6 +143,11 @@ fn gui_list_pdfs_ordered(vec: &Vec<String>) {
     }
     
     if iterator_count <= 0 {
-        println!("Please check if there are any PDFs in the directory: {}", PDF_DIR.to_string_lossy())
+        println!("Please check if there are any PDFs in the directory: {}", ROOT_DIR.to_string_lossy())
     }
+}
+
+// For when the user runs the exe file without a terminal
+fn auto_run(configuration: &Config) {
+    
 }

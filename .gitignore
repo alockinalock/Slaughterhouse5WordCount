@@ -6,6 +6,7 @@
 
 # Saves directory
 saved/
+assets/
 
 # System files
 .DS_Store

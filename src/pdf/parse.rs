@@ -45,6 +45,7 @@ pub fn sort_by_instances(data: HashMap<String, usize>) -> Vec<(String, usize)> {
 }
 
 // the order of the vector is not the same as the hashmap, but it's not sorted so it's negligible
+// FIXME: does NOT work as intended.
 pub fn to_btreemap(data: Vec<(String, usize)>) -> BTreeMap<usize, String> {
     let mut entries: BTreeMap<usize, String> = BTreeMap::new();
     for (word, count) in data {
