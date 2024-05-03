@@ -1,5 +1,7 @@
 use std::collections::BTreeMap;
 use std::collections::HashMap;
+use std::fs::File;
+use std::io::BufWriter;
 use std::io::Write;
 use std::path::PathBuf;
 
@@ -20,6 +22,8 @@ lazy_static::lazy_static! {
     pub static ref ROOT_DIR: PathBuf = executable_dir().expect("Failed to get root folder");
 
     pub static ref SAVE_DIR: PathBuf = ROOT_DIR.join("saved");
+
+    pub static ref CONFIG_DIR: PathBuf = ROOT_DIR.join("config.json");
 }
 
 struct Config {
@@ -148,6 +152,41 @@ fn gui_list_pdfs_ordered(vec: &Vec<String>) {
 }
 
 // For when the user runs the exe file without a terminal
-fn auto_run(configuration: &Config) {
-    
+fn auto_run() {
+
+    let mut auto_config;
+
+    if !CONFIG_DIR.exists() {
+        auto_config = Config {
+            sorted: false,
+            saved: false,
+        }
+        let config_file = File::create(CONFIG_DIR.as_path()).unwrap_or_else(|error| {
+            let mut error_log = File::create("error_log.txt").expect("Something has gone horribly wrong to the point that the program can't even create the error log...");
+            writeln!(error_log, "Error creating config file at the following path: {}", CONFIG_DIR.to_string_lossy()).expect("Writing to the error log has miraculously failed");
+            panic!("Failed to create config file. Error log created at: {}", ROOT_DIR.join("error_log.txt").to_string_lossy());
+        });
+        let mut writer = BufWriter::new(config_file);
+        serde_json::to_writer_pretty(&mut writer, &auto_config).expect("Saving config to config.json failed");
+
+    }
+    else {
+        
+    }
+
+
+
+    if configuration.saved {
+        let pdfs = get_pdfs(&ROOT_DIR).unwrap();
+
+        if pdfs.is_empty() {
+            return;
+        }
+
+
+
+        if configuration.sorted {
+
+        }
+    }
 }
