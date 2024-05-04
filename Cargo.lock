@@ -452,5 +452,6 @@ dependencies = [
  "lazy_static",
  "pdf-extract",
  "regex",
+ "serde",
  "serde_json",
 ]

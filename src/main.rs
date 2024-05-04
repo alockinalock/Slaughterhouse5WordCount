@@ -1,9 +1,12 @@
 use std::collections::BTreeMap;
 use std::collections::HashMap;
+use std::fs;
 use std::fs::File;
 use std::io::BufWriter;
 use std::io::Write;
 use std::path::PathBuf;
+
+use serde::{Serialize, Deserialize};
 
 pub mod path;
 pub mod pdf;
@@ -17,6 +20,7 @@ use std::io;
 
 extern crate regex;
 extern crate serde_json;
+extern crate serde;
 
 lazy_static::lazy_static! {
     pub static ref ROOT_DIR: PathBuf = executable_dir().expect("Failed to get root folder");
@@ -26,6 +30,7 @@ lazy_static::lazy_static! {
     pub static ref CONFIG_DIR: PathBuf = ROOT_DIR.join("config.json");
 }
 
+#[derive(Serialize, Deserialize)]
 struct Config {
     sorted: bool,
     saved: bool,
@@ -45,7 +50,7 @@ fn main() {
         println!("The saved folder was not found. Folder created at {}", SAVE_DIR.to_string_lossy());
     }
 
-    auto_run(&user_config);
+    auto_run();
 
     // this line may panic
     let pdfs = get_pdfs(&ROOT_DIR).unwrap();
@@ -160,7 +165,7 @@ fn auto_run() {
         auto_config = Config {
             sorted: false,
             saved: false,
-        }
+        };
         let config_file = File::create(CONFIG_DIR.as_path()).unwrap_or_else(|error| {
             let mut error_log = File::create("error_log.txt").expect("Something has gone horribly wrong to the point that the program can't even create the error log...");
             writeln!(error_log, "Error creating config file at the following path: {}", CONFIG_DIR.to_string_lossy()).expect("Writing to the error log has miraculously failed");
@@ -171,12 +176,13 @@ fn auto_run() {
 
     }
     else {
-        
+        let data  = fs::read_to_string(CONFIG_DIR.as_path()).expect("Unable to read config file");
+        auto_config = serde_json::from_str(&data).expect("Failed to read from JSON");
     }
 
 
-
-    if configuration.saved {
+    
+    if auto_config.saved {
         let pdfs = get_pdfs(&ROOT_DIR).unwrap();
 
         if pdfs.is_empty() {
@@ -185,7 +191,7 @@ fn auto_run() {
 
 
 
-        if configuration.sorted {
+        if auto_config.sorted {
 
         }
     }
