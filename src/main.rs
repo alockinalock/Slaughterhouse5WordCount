@@ -44,13 +44,22 @@ fn main() {
         saved: false,
     };
 
-    // Created saved folder if it doesn't exist
+    // create missing files/folders if necessary
     if !SAVE_DIR.exists() {
         std::fs::create_dir(SAVE_DIR.as_path()).expect("Failed to create saved folder");
         println!("The saved folder was not found. Folder created at {}", SAVE_DIR.to_string_lossy());
     }
 
-    auto_run();
+    if !CONFIG_DIR.exists() {
+        let config_file = File::create(CONFIG_DIR.as_path()).unwrap_or_else(|error| {
+            let mut error_log = File::create("error_log.txt").expect("Something has gone horribly wrong to the point that the program can't even create the error log...");
+            writeln!(error_log, "Error creating config file at the following path: {}", CONFIG_DIR.to_string_lossy()).expect("Writing to the error log has miraculously failed");
+            panic!("Failed to create config file. Error log created at: {}", ROOT_DIR.join("error_log.txt").to_string_lossy());
+        });
+        let mut writer = BufWriter::new(config_file);
+        serde_json::to_writer_pretty(&mut writer, &user_config).expect("Saving config to config.json failed");
+        println!("The config file was not found. File created at {}", CONFIG_DIR.to_string_lossy());
+    }
 
     // this line may panic
     let pdfs = get_pdfs(&ROOT_DIR).unwrap();
@@ -61,7 +70,6 @@ fn main() {
     }
     else{
         gui_list_pdfs_ordered(&pdfs);
-
         println!("Enter the number which represents the PDF document you would like to use.");
     }
 
@@ -142,6 +150,10 @@ fn main() {
         
         println!("JSON saved at: {}", SAVE_DIR.join(file_name).to_string_lossy());
     }
+
+    // in case terminal isnt opened
+    auto_run();
+    
 }
 
 fn gui_list_pdfs_ordered(vec: &Vec<String>) {
@@ -159,12 +171,12 @@ fn gui_list_pdfs_ordered(vec: &Vec<String>) {
 // For when the user runs the exe file without a terminal
 fn auto_run() {
 
-    let mut auto_config;
+    let auto_config;
 
     if !CONFIG_DIR.exists() {
         auto_config = Config {
             sorted: false,
-            saved: false,
+            saved: true,
         };
         let config_file = File::create(CONFIG_DIR.as_path()).unwrap_or_else(|error| {
             let mut error_log = File::create("error_log.txt").expect("Something has gone horribly wrong to the point that the program can't even create the error log...");
@@ -181,7 +193,7 @@ fn auto_run() {
     }
 
 
-    
+
     if auto_config.saved {
         let pdfs = get_pdfs(&ROOT_DIR).unwrap();
 
@@ -189,10 +201,19 @@ fn auto_run() {
             return;
         }
 
+        let selected_pdf = &pdfs[0];
 
+        let parsed_data = read_pdf(&ROOT_DIR.join(selected_pdf));
+
+
+        let unsorted = regex_parse_for_words(&parsed_data.as_str());
+        let sorted = sort_by_instances(unsorted.clone());
 
         if auto_config.sorted {
-
+            return;
         }
+        
+        save_to_json_for_hashmap(&unsorted, ROOT_DIR.to_path_buf());
+        return;
     }
 }
