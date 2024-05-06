@@ -151,8 +151,10 @@ fn main() {
         println!("JSON saved at: {}", SAVE_DIR.join(file_name).to_string_lossy());
     }
 
-    // in case terminal isnt opened
-    auto_run();
+    if !temp_input_holder.is_empty() {
+        // in case terminal isnt opened
+        auto_run();
+    }
     
 }
 
