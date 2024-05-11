@@ -140,12 +140,11 @@ fn main() {
 
     if user_config.saved {
         let prepared_unsorted: HashMap<String, usize> = word_counts;
-        let prepared_sorted: BTreeMap<usize, String> = to_btreemap(sorted_count);
         let file_name: String;
         if !user_config.sorted {
             file_name = save_to_json_for_hashmap(&prepared_unsorted, SAVE_DIR.to_path_buf());
         } else {
-            file_name = save_to_json_for_btreemap(&prepared_sorted, SAVE_DIR.to_path_buf());
+            file_name = save_to_json_for_vec(&sorted_count, SAVE_DIR.to_path_buf());
         }
         
         println!("JSON saved at: {}", SAVE_DIR.join(file_name).to_string_lossy());
