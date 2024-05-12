@@ -1,4 +1,4 @@
-use std::io::Write;
+use std::{fmt::format, io::Write};
 use std::path::PathBuf;
 use std::fs;
 use std::fs::*;
@@ -18,9 +18,10 @@ pub fn save_to_json_for_hashmap(data: &HashMap<String, usize>, path_to_saved: Pa
         file_name
 }
 
-// TODO: fix how the function writes to json for more... readable json
 pub fn save_to_json_for_vec(data: &Vec<(String, usize)>, path_to_saved: PathBuf) -> String {
-        let json_string = serde_json::to_string_pretty(&data).unwrap();
+        let formatted_vec: Vec<_> = data.iter().map(|(term, count)| format!("{}: {}", term, count)).collect();
+        
+        let json_string = serde_json::to_string_pretty(&formatted_vec).unwrap();
 
         let file_name = format!("{}.json", manage_file_name(path_to_saved.clone()).unwrap_or("data0".to_string()));
 
@@ -29,7 +30,6 @@ pub fn save_to_json_for_vec(data: &Vec<(String, usize)>, path_to_saved: PathBuf)
 
         file_name
 }
-
 
 pub fn save_to_json_for_btreemap(data: &BTreeMap<usize, String>, path_to_saved: PathBuf) -> String{
         let mut json_obj = json!({});
